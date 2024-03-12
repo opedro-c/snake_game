@@ -1,3 +1,5 @@
+use std::borrow::BorrowMut;
+
 use crate::keyboard_input::Directions;
 
 
@@ -20,19 +22,31 @@ enum SnakeBodyParts {
 
 impl Snake {
     pub fn update_body_position(&mut self, new_position: Position, direction: Directions) {
+        let current_position = Position {row: self.position.row, column: self.position.column};
         if self.head {
             match direction {
                 Directions::Up => {
                     self.repr = SnakeBodyParts::HeadUp;
-                    todo!("Update positions on body parts");
+                    self.position.row = self.position.row - 1;
                 },
-                Directions::Down => self.repr = SnakeBodyParts::HeadDown,
-                Directions::Left => self.repr = SnakeBodyParts::HeadLeft,
-                Directions::Right => self.repr = SnakeBodyParts::HeadRight,
-            }
-
+                Directions::Down => {
+                    self.repr = SnakeBodyParts::HeadDown;
+                    self.position.row = self.position.row + 1;
+                },
+                Directions::Left => {
+                    self.repr = SnakeBodyParts::HeadLeft;
+                    self.position.column = self.position.column - 1;
+                },
+                Directions::Right => {
+                    self.repr = SnakeBodyParts::HeadRight;
+                    self.position.column = self.position.column + 1;
+                }
+            };
+        } else {
+            self.position = new_position;
         }
-        self.position = new_position;
+        self.body.take().unwrap().update_body_position(current_position, direction);
+        // self.direction = direction;
     }
 
     pub fn add_body(&mut self, new_body: Option<Box<Snake>>) {
@@ -47,10 +61,10 @@ impl Snake {
 impl Iterator for Snake {
 
     type Item = Option<Box<Snake>>;
-    fn next(&mut self) -> Option<<Self as Iterator>::Item> { todo!() }
+    fn next(&mut self) -> Option<<Self as Iterator>::Item> { Some(Self::Item::from(self.body.take())) }
 }
 
 struct Position {
-    x: u8,
-    y: u8
+    row: u8,
+    column: u8
 }
