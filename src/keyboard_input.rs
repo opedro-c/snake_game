@@ -1,8 +1,10 @@
 use std::sync::{Arc, Mutex};
 use std::io::stdin;
+use strum_macros::Display;
 use termion::event::Key;
 use termion::input::TermRead;
 
+#[derive(Display)]
 pub enum Directions {
     Up,
     Down,
