@@ -1,4 +1,4 @@
-use std::sync::{Arc, Mutex};
+use std::sync::mpsc::Sender;
 use std::io::stdin;
 use strum_macros::Display;
 use termion::event::Key;
@@ -12,27 +12,23 @@ pub enum Directions {
     Right
 }
 
-pub fn read_key_down_event(direction: Arc<Mutex<Directions>>) {
+pub fn read_key_down_event(sender: Sender<Directions>) {
     let stdin = stdin();
     for c in stdin.keys() {
         match c.unwrap() {
             Key::Up => {
-                let mut dir = direction.lock().unwrap();
-                *dir = Directions::Up;
-            }
-            Key::Down => {
-                let mut dir = direction.lock().unwrap();
-                *dir = Directions::Down;
-            }
-            Key::Left => {
-                let mut dir = direction.lock().unwrap();
-                *dir = Directions::Left;
-            }
-            Key::Right => {
-                let mut dir = direction.lock().unwrap();
-                *dir = Directions::Right;
+                sender.send(Directions::Up).unwrap();
             },
-            _ => todo!()
+            Key::Down => {
+                sender.send(Directions::Down).unwrap();
+            },
+            Key::Left => {
+                sender.send(Directions::Left).unwrap();
+            },
+            Key::Right => {
+                sender.send(Directions::Right).unwrap();
+            },
+            _ => (),
 
         }
     }
