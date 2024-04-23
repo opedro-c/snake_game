@@ -1,8 +1,4 @@
-use std::borrow::BorrowMut;
-
 use crate::keyboard_input::Directions;
-
-
 
 struct Snake {
     head: bool,
