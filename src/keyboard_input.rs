@@ -4,7 +4,7 @@ use strum_macros::Display;
 use termion::event::Key;
 use termion::input::TermRead;
 
-#[derive(Display)]
+#[derive(Display, Clone, Copy)]
 pub enum Directions {
     Up,
     Down,

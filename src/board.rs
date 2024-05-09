@@ -6,11 +6,13 @@ pub enum BoardCell {
     Wall,
     Free,
     Food,
+    Snake,
+    SnakeHead
 }
 
 pub type Board = Vec<Vec<BoardCell>>;
 
-pub fn new_board(rows: u8, columns: u8) -> Board {
+pub fn new_board(rows: usize, columns: usize) -> Board {
     let mut board: Board = vec![vec![BoardCell::Free; columns.into()]; rows.into()];
 
     for i in 0..rows as usize {
@@ -23,8 +25,14 @@ pub fn new_board(rows: u8, columns: u8) -> Board {
         board[(rows - 1) as usize][i] = BoardCell::Wall;
     }
 
-    board[rand::thread_rng().gen_range(1..rows - 1) as usize][rand::thread_rng().gen_range(1..columns - 1) as usize] = BoardCell::Food;
+    add_food_to_the_board(&mut board);
     board
+}
+
+pub fn add_food_to_the_board(board: &mut Board) {
+    let rows = board.len();
+    let columns = board[0].len();
+    board[rand::thread_rng().gen_range(1..rows - 1) as usize][rand::thread_rng().gen_range(1..columns - 1) as usize] = BoardCell::Food;
 }
 
 impl fmt::Display for BoardCell {
@@ -33,6 +41,8 @@ impl fmt::Display for BoardCell {
             BoardCell::Wall => write!(f, "#"),
             BoardCell::Free => write!(f, " "),
             BoardCell::Food => write!(f, "ó"),
+            BoardCell::Snake => write!(f, "*"),
+            BoardCell::SnakeHead => write!(f, "o")
         }
     }
 }
