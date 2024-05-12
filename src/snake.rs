@@ -1,9 +1,9 @@
-use std::collections::LinkedList;
+use std::{collections::LinkedList, mem::swap};
 
 use crate::{keyboard_input::Directions, settings::Settings};
 
 pub struct Snake {
-    body: LinkedList<Position>
+    pub body: LinkedList<Position>
 }
 
 impl Snake {
@@ -14,42 +14,29 @@ impl Snake {
         Snake { body }
     }
 
-    pub fn update_body_position(&mut self, new_position: Position, direction: Directions) {
-        match direction {
-                Directions::Up => {
-                    self.body.front().unwrap().row = self.body.front().unwrap().row - 1;
-                },
-                Directions::Down => {
-                    self.body.front().unwrap().row = self.body.front().unwrap().row + 1;
-                },
-                Directions::Left => {
-                    self.body.front().unwrap().column = self.body.front().unwrap().column - 1;
-                },
-                Directions::Right => {
-                    self.body.front().unwrap().column = self.body.front().unwrap().column + 1;
-                }
-            };
-    }
+    pub fn update_body_position(&mut self, new_position: Position) {
+        let old_position = self.body.front();
 
-    pub fn add_body(&mut self) {
-        let mut last_snake_body = &self.body;
-        loop {
-            let mut body = self.next();
-            if body.take().is_some() {
-                last_snake_body = &body.expect("Not able to get snake body");
+        for (i, mut position) in self.body.iter().enumerate() {
+            if i != 0 {
+                swap(&mut position, &mut old_position.unwrap());
             } else {
-                break;
+                swap(&mut position, &mut &new_position);
             }
         }
-        last_snake_body.take().unwrap().body = Option::Some(Box::from(Snake{ head: false, direction: self.direction, position: todo!(), body: todo!() }))
     }
 
-    pub fn get_head_position(&self) -> Result<Position, &str> {
-        if !self.head {
-            Err("Not head, so cannot get head position")
-        } else {
-            Ok(self.position.clone())
+    pub fn get_snake_next_position(&self, direction: Directions) -> Position {
+        match direction {
+            Directions::Up => Position { row: self.body.front().unwrap().row - 1, column: self.body.front().unwrap().column },
+            Directions::Down => Position { row: self.body.front().unwrap().row + 1, column: self.body.front().unwrap().column },
+            Directions::Left => Position { row: self.body.front().unwrap().row, column: self.body.front().unwrap().column - 1 },
+            Directions::Right => Position { row: self.body.front().unwrap().row, column: self.body.front().unwrap().column + 1 }
         }
+    }
+
+    pub fn grow(&mut self) {
+        self.body.push_back(self.body.back().unwrap().clone());
     }
 }
 

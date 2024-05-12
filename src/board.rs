@@ -1,6 +1,8 @@
 use std::fmt;
 use rand::Rng;
 
+use crate::snake::Snake;
+
 #[derive(Clone)]
 pub enum BoardCell {
     Wall,
@@ -35,6 +37,16 @@ pub fn add_food_to_the_board(board: &mut Board) {
     board[rand::thread_rng().gen_range(1..rows - 1) as usize][rand::thread_rng().gen_range(1..columns - 1) as usize] = BoardCell::Food;
 }
 
+pub fn place_snake_in_the_board(board: &mut Board, snake: &mut Snake) {
+    let snake_head_position = snake.body.front();
+    board[snake_head_position.unwrap().row][snake_head_position.unwrap().column] = BoardCell::SnakeHead;
+    for (i, position) in snake.body.iter().enumerate() {
+        if i != 0 {
+            board[position.row][position.column] = BoardCell::Snake;
+        }
+    }
+}
+
 impl fmt::Display for BoardCell {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -42,7 +54,7 @@ impl fmt::Display for BoardCell {
             BoardCell::Free => write!(f, " "),
             BoardCell::Food => write!(f, "ó"),
             BoardCell::Snake => write!(f, "*"),
-            BoardCell::SnakeHead => write!(f, "o")
+            BoardCell::SnakeHead => write!(f, "+")
         }
     }
 }
