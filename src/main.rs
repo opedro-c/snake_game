@@ -23,8 +23,8 @@ fn main() {
     let settings = Settings { board_width: 50, board_height: 25 };
     let mut stdout = stdout().into_raw_mode().unwrap();
     let board = new_board(settings.board_height, settings.board_width);
-    let mut snake = Snake::new(settings);
-    let mut game_runner = GameRunner::new(&mut snake,&board, receiver);
+    let snake = Snake::new(settings);
+    let mut game_runner = GameRunner::new(snake,&board, receiver);
     std::thread::spawn(move || read_key_down_event(sender));
     display_board(&board, &mut stdout);
 
