@@ -18,7 +18,9 @@ impl GameRunner<'_> {
 
     pub fn process_events(&mut self) {
 
-        self.direction = self.direction_receiver.try_recv().unwrap_or(self.direction);
+        let direction = self.direction_receiver.try_recv().unwrap_or(self.direction);
+        self.direction = self.handle_input(direction);
+
         let mut snake_head_next_position = self.snake.get_snake_next_position(self.direction);
 
         let board_cell_where_snake_head_will_be_positioned = &self.board[snake_head_next_position.row][snake_head_next_position.column];
@@ -49,4 +51,15 @@ impl GameRunner<'_> {
     pub fn get_board(&self) -> Board {
         self.board.to_vec()
     }
+
+    pub fn handle_input(&self, new_direction: Directions) -> Directions {
+        match (self.direction, new_direction) {
+            (Directions::Up, Directions::Down)
+            | (Directions::Down, Directions::Up)
+            | (Directions::Left, Directions::Right)
+            | (Directions::Right, Directions::Left) => self.direction,
+            _ => new_direction
+        }
+    }
+
 }
