@@ -18,8 +18,8 @@ impl GameRunner<'_> {
 
     pub fn process_events(&mut self) {
 
-        let direction = self.direction_receiver.try_recv().unwrap_or(self.direction);
-        self.direction = self.handle_input(direction);
+        let new_direction = self.direction_receiver.try_recv().unwrap_or(self.direction);
+        self.direction = self.handle_input(new_direction);
 
         let mut snake_head_next_position = self.snake.get_snake_next_position(self.direction);
 

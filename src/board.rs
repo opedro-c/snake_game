@@ -1,5 +1,5 @@
 use std::fmt;
-use rand::{seq::SliceRandom};
+use rand::seq::SliceRandom;
 
 use crate::snake::{Position, Snake};
 
@@ -15,16 +15,16 @@ pub enum BoardCell {
 pub type Board = Vec<Vec<BoardCell>>;
 
 pub fn new_board(rows: usize, columns: usize) -> Board {
-    let mut board: Board = vec![vec![BoardCell::Free; columns.into()]; rows.into()];
+    let mut board: Board = vec![vec![BoardCell::Free; columns]; rows];
 
     for i in 0..rows as usize {
         board[i][0] = BoardCell::Wall;
-        board[i][(columns - 1) as usize] = BoardCell::Wall;
+        board[i][columns - 1] = BoardCell::Wall;
     }
 
     for i in 0..columns as usize {
         board[0][i] = BoardCell::Wall;
-        board[(rows - 1) as usize][i] = BoardCell::Wall;
+        board[rows - 1][i] = BoardCell::Wall;
     }
 
     add_food_to_the_board(&mut board);

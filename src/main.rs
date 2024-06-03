@@ -32,12 +32,11 @@ fn main() {
         std::thread::sleep(std::time::Duration::from_millis(500));
         game_runner.process_events();
         write!(stdout, "{} {}", cursor::Goto(1,1), clear::All).unwrap();
-        stdout.flush().unwrap();
         display_board(&game_runner.get_board(), &mut stdout);
+        stdout.flush().unwrap();
         if game_runner.is_game_over() {
             println!("Game over!");
             break;
         }
-        stdout.flush().unwrap();
     }
 }
