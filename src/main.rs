@@ -22,17 +22,17 @@ fn main() {
     let (sender, receiver) = channel::<Directions>();
     let settings = Settings { board_width: 50, board_height: 25 };
     let mut stdout = stdout().into_raw_mode().unwrap();
-    let board = new_board(settings.board_height, settings.board_width);
+    let mut board = new_board(settings.board_height, settings.board_width);
     let snake = Snake::new(settings);
-    let mut game_runner = GameRunner::new(snake,&board, receiver);
+    let mut game_runner = GameRunner::new(snake, &mut board, receiver);
     std::thread::spawn(move || read_key_down_event(sender));
-    display_board(&board, &mut stdout);
+    display_board(&game_runner.get_board(), &mut stdout);
 
     loop {
-        std::thread::sleep(std::time::Duration::from_millis(1000));
+        std::thread::sleep(std::time::Duration::from_millis(500));
         game_runner.process_events();
         write!(stdout, "{} {}", cursor::Goto(1,1), clear::All).unwrap();
-        display_board(&board, &mut stdout);
+        display_board(&game_runner.get_board(), &mut stdout);
         if game_runner.is_game_over() {
             println!("Game over!");
             break;

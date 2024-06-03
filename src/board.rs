@@ -1,7 +1,7 @@
 use std::fmt;
 use rand::Rng;
 
-use crate::snake::Snake;
+use crate::snake::{Position, Snake};
 
 #[derive(Clone)]
 pub enum BoardCell {
@@ -46,6 +46,10 @@ pub fn place_snake_in_the_board(board: &mut Board, snake: &mut Snake) {
             board[position.row][position.column] = BoardCell::Snake;
         }
     }
+}
+
+pub fn free_board_cell(board: &mut Board, position: Position) {
+    board[position.row][position.column] = BoardCell::Free;
 }
 
 impl fmt::Display for BoardCell {
