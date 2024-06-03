@@ -10,6 +10,5 @@ pub fn display_board(board: &Board, output: &mut RawTerminal<Stdout>) {
         }
         println!();
         write!(output, "{}", cursor::Left(board[0].len().try_into().unwrap())).unwrap();
-        output.flush().unwrap();
     }
 }

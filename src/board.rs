@@ -53,7 +53,6 @@ pub fn get_free_board_cells(board: &Board) -> Vec<Position> {
 
 pub fn place_snake_in_the_board(board: &mut Board, snake: &mut Snake) {
     let snake_head_position = snake.body.first();
-    println!("{}{}", snake_head_position.unwrap().row, snake_head_position.unwrap().column);
     board[snake_head_position.unwrap().row][snake_head_position.unwrap().column] = BoardCell::SnakeHead;
     for (i, position) in snake.body.iter().enumerate() {
         if i != 0 {
