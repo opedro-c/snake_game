@@ -1,5 +1,5 @@
 use std::fmt;
-use rand::Rng;
+use rand::{seq::SliceRandom};
 
 use crate::snake::{Position, Snake};
 
@@ -32,9 +32,23 @@ pub fn new_board(rows: usize, columns: usize) -> Board {
 }
 
 pub fn add_food_to_the_board(board: &mut Board) {
-    let rows = board.len();
-    let columns = board[0].len();
-    board[rand::thread_rng().gen_range(1..rows - 1) as usize][rand::thread_rng().gen_range(1..columns - 1) as usize] = BoardCell::Food;
+    let free_board_position = get_free_board_cells(board).choose(&mut rand::thread_rng()).unwrap().clone();
+    board[free_board_position.row][free_board_position.column] = BoardCell::Food;
+}
+
+pub fn get_free_board_cells(board: &Board) -> Vec<Position> {
+    let mut free_board_cells: Vec<Position> = Vec::new();
+    for i in 0..board.len() {
+        for j in 0..board[i].len() {
+            if matches!(board[i][j], BoardCell::Free) {
+                free_board_cells.push(
+                    Position { row: i, column: j }
+                );
+            }
+        }
+    }
+    free_board_cells
+
 }
 
 pub fn place_snake_in_the_board(board: &mut Board, snake: &mut Snake) {
